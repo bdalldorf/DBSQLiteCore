@@ -1,0 +1,2 @@
+# DBSQLiteCore
+SQLite .Net Core
