@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Text;
 
-namespace ConsoleTestProjects
+namespace DBSqlite
 {
     public static class SQLiteDBStateless
     {
