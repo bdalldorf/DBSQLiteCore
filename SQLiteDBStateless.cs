@@ -209,7 +209,7 @@ namespace DBSqlite
             }
         }
 
-        public static string ModelTableFieldNames(Type Model)
+        public static string ModelFieldNames(Type Model)
         {
             StringBuilder StringBuilder = new StringBuilder();
 
@@ -217,28 +217,24 @@ namespace DBSqlite
                 | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
             {
                 string Value = (string)Field.CustomAttributes.Where(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute)).First().ConstructorArguments.First().Value;
-                StringBuilder.Append(StringBuilder.Length == 0 ? $"({Value}" : $", {Value}");
+                StringBuilder.Append(StringBuilder.Length == 0 ? $"{Value}" : $", {Value}");
             }
-
-            StringBuilder.Append(")");
 
             return StringBuilder.ToString();
         }
 
-        //public static string ModelTableFieldValues(Type Model)
-        //{
-        //    StringBuilder StringBuilder = new StringBuilder();
+        public static string ModelFieldValues(object Model)
+        {
+            StringBuilder StringBuilder = new StringBuilder();
 
-        //    foreach (FieldInfo Field in Model.GetFields(System.Reflection.BindingFlags.Public
-        //        | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
-        //    {
-        //        string Value = (string)Field.CustomAttributes.Where(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute)).First().ConstructorArguments.First().Value;
-        //        StringBuilder.Append(StringBuilder.Length == 0 ? $"({Value}" : $", {Value}");
-        //    }
+            foreach (var properties in Model.GetType().GetFields(System.Reflection.BindingFlags.Public
+                | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
+            {
+                object Value = properties.GetValue(Model);
+                StringBuilder.Append(StringBuilder.Length == 0 ? $"{Value}" : $", {Value}");
+            }
 
-        //    StringBuilder.Append(")");
-
-        //    return StringBuilder.ToString();
-        //}
+            return StringBuilder.ToString();
+        }
     }
 }

@@ -30,7 +30,9 @@ namespace DBSqlite.Models
 
         #region Constructors
 
-        public UserModel(int id)
+        public UserModel() { }
+
+            public UserModel(int id)
         {
             DataTable DataTable = SQLiteDBStateless.ExecDataTable($"SELECT * FROM usrUser_user WHERE usrID = {id}");
 
@@ -55,7 +57,7 @@ namespace DBSqlite.Models
 
         private string ModelFields
         {
-            get { return SQLiteDBStateless.ModelTableFieldNames(typeof(UserModel)); }
+            get { return SQLiteDBStateless.ModelFieldNames(typeof(UserModel)); }
         }
 
         private string ModelValues

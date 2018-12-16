@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DBSQLiteTesting\**" />
+    <EmbeddedResource Remove="DBSQLiteTesting\**" />
+    <None Remove="DBSQLiteTesting\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="NUnit" Version="3.11.0" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.2" />
   </ItemGroup>
