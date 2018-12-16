@@ -84,7 +84,7 @@ namespace DBSqlite.Models
         private void Insert()
         {
             this.ID = (int)DBSqlite.SQLiteDBStateless.
-                ExecInsertNonQueryReturnID($"INSERT INTO {this.TableName()} {SQLiteDBStateless.GenerateInsertFields(this)});
+                ExecInsertNonQueryReturnID($"INSERT INTO {this.TableName()} {SQLiteDBStateless.GenerateInsertFields(this)} ");
         }
 
         private void Update()
