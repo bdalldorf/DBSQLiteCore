@@ -62,13 +62,13 @@ namespace DBSqlite.Models
         {
             get
             {
-
                 StringBuilder l_StringBuilder = new StringBuilder();
 
-                foreach (FieldInfo Field in typeof(UserModel).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Public))
-                {
-                    l_StringBuilder.AppendLine(Field.ToString().TableField());
-                }
+                l_StringBuilder.Append($"{this.ID}");
+                l_StringBuilder.Append($",{this.UID}");
+                l_StringBuilder.Append($",{this.FirstName}");
+                l_StringBuilder.Append($",{this.LastName}");
+                l_StringBuilder.Append($",{this.EmailAddress}");
 
                 return l_StringBuilder.ToString();
             }
@@ -92,7 +92,7 @@ namespace DBSqlite.Models
             StringBuilder l_StringBuilder = new StringBuilder();
 
             l_StringBuilder.Append($"INSERT INTO usrUser_user ({ModelFields}) VALUES ({ModelValues})");
-            DBSqlite.SQLiteDBStateless.ExecInsertNonQueryReturnID(l_StringBuilder.ToString());
+            this.ID = (int)DBSqlite.SQLiteDBStateless.ExecInsertNonQueryReturnID(l_StringBuilder.ToString());
         }
 
         private void Update()
