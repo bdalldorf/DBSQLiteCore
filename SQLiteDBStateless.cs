@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace DBSqlite
 {
@@ -98,6 +100,40 @@ namespace DBSqlite
             return true;
         }
 
+        public static long ExecInsertNonQueryReturnID(string sql)
+        {
+            long RowID = SQLiteDBCommon.EmptyLong;
+            SQLiteTransaction SQLiteTransaction = null;
+            StringBuilder l_Results = new StringBuilder();
+
+            try
+            {
+                SQLiteTransaction = BeginTransaction();
+
+                Command(sql, SQLiteTransaction).ExecuteNonQuery();
+
+                RowID = SQLiteTransaction.Connection.LastInsertRowId;
+            }
+            catch (Exception exception)
+            {
+                if (SQLiteTransaction != null)
+                {
+                    SQLiteTransaction.Rollback();
+                    SQLiteTransaction.Dispose();
+                    SQLiteTransaction = null;
+                }
+            }
+            finally
+            {
+                if (SQLiteTransaction != null)
+                {
+                    SQLiteTransaction.Commit();
+                }
+            }
+
+            return RowID;
+        }
+
         public static object ExecScalar(string sql)
         {
             {
@@ -172,5 +208,37 @@ namespace DBSqlite
                 return DataTable;
             }
         }
+
+        public static string ModelTableFieldNames(Type Model)
+        {
+            StringBuilder StringBuilder = new StringBuilder();
+
+            foreach (FieldInfo Field in Model.GetFields(System.Reflection.BindingFlags.Public
+                | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
+            {
+                string Value = (string)Field.CustomAttributes.Where(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute)).First().ConstructorArguments.First().Value;
+                StringBuilder.Append(StringBuilder.Length == 0 ? $"({Value}" : $", {Value}");
+            }
+
+            StringBuilder.Append(")");
+
+            return StringBuilder.ToString();
+        }
+
+        //public static string ModelTableFieldValues(Type Model)
+        //{
+        //    StringBuilder StringBuilder = new StringBuilder();
+
+        //    foreach (FieldInfo Field in Model.GetFields(System.Reflection.BindingFlags.Public
+        //        | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
+        //    {
+        //        string Value = (string)Field.CustomAttributes.Where(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute)).First().ConstructorArguments.First().Value;
+        //        StringBuilder.Append(StringBuilder.Length == 0 ? $"({Value}" : $", {Value}");
+        //    }
+
+        //    StringBuilder.Append(")");
+
+        //    return StringBuilder.ToString();
+        //}
     }
 }
