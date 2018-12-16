@@ -43,6 +43,8 @@ namespace DBSqlLiteTests
 
             string UserUpdateFields = SQLiteDBStateless.GenerateUpdateFields(UserModel);
             Assert.AreEqual("usrUID = 'Testert1', usrFirstName = 'Test', usrLastName = 'Tester', usrEmailAddress = 'test@testing.com'", UserUpdateFields);
+            Assert.AreEqual($"UPDATE {UserModel.TableName()} SET usrUID = 'Testert1', usrFirstName = 'Test', usrLastName = 'Tester', usrEmailAddress = 'test@testing.com' WHERE usrID = 1", 
+                $"UPDATE {UserModel.TableName()} SET {UserUpdateFields} WHERE usrID = 1");
         }
 
         [Test]
@@ -59,6 +61,8 @@ namespace DBSqlLiteTests
 
             string UserUpdateFields = SQLiteDBStateless.GenerateInsertFields(UserModel);
             Assert.AreEqual("(usrUID, usrFirstName, usrLastName, usrEmailAddress) VALUES ('Testert1', 'Test', 'Tester', 'test@testing.com')", UserUpdateFields);
+            Assert.AreEqual($"INSERT INTO {UserModel.TableName()} (usrUID, usrFirstName, usrLastName, usrEmailAddress) VALUES ('Testert1', 'Test', 'Tester', 'test@testing.com')", 
+                $"INSERT INTO {UserModel.TableName()} {UserUpdateFields}");
         }
 
         [Test]

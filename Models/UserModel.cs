@@ -84,7 +84,7 @@ namespace DBSqlite.Models
         private void Insert()
         {
             this.ID = (int)DBSqlite.SQLiteDBStateless.
-                ExecInsertNonQueryReturnID($"INSERT INTO {this.TableName()} {SQLiteDBStateless.GenerateInsertFields(this)} ");
+                ExecInsertNonQueryReturnID($"INSERT INTO {this.TableName()} {SQLiteDBStateless.GenerateInsertFields(this)}");
         }
 
         private void Update()
@@ -95,7 +95,7 @@ namespace DBSqlite.Models
         private void Delete()
         {
             DBSqlite.SQLiteDBStateless.
-                ExecInsertNonQueryReturnID($"DELETE {this.TableName()} WHERE usrID = {this.ID}");
+                ExecInsertNonQueryReturnID($"DELETE FROM {this.TableName()} WHERE usrID = {this.ID}");
         }
 
         #endregion
