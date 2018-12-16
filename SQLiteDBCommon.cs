@@ -23,6 +23,7 @@ namespace DBSqlite
         public static string SetValueForSql(DateTime value) => value == EmptyDateTime ? "NULL" : $"'{value}'";
         public static string SetValueForSql(char value) => value == EmptyChar ? "NULL" : $"'{value}'";
         public static string SetValueForSql(string value) => value == EmptyString ? "NULL" : $"'{value}'";
+        public static string SetValueForSql(bool value) => value ? "1" : "0";
 
         public static byte GetValueByteFromSql(object value) => Convert.ToByte(value);
         public static int GetValueIntFromSql(object value) => Convert.ToInt32(value);
@@ -33,5 +34,6 @@ namespace DBSqlite
         public static DateTime GetValueDateTimeFromSql(object value) => Convert.ToDateTime(value);
         public static char GetValueCharFromSql(object value) => Convert.ToChar(value);
         public static string GetValueStringFromSql(object value) => value.ToString();
+        public static bool GetValueBoolFromSql(object value) => Convert.ToBoolean(value);
     }
 }
