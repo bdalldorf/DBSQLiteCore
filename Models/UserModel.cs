@@ -7,7 +7,8 @@ using System.Text;
 
 namespace DBSqlite.Models
 {
-    public partial class UserModel
+    [TableName("usrUser_usr")]
+    public partial class UserModel : IDatabaseModel
     {
         #region private properties
 
@@ -16,6 +17,8 @@ namespace DBSqlite.Models
         #region public properties
 
         [TableFieldName("usrID")]
+        [TableFieldExcludeFromUpdate(true)]
+        [TableFieldExcludeFromInsert(true)]
         public int ID;
         [TableFieldName("usrUID")]
         public string UID;
@@ -62,18 +65,7 @@ namespace DBSqlite.Models
 
         private string ModelValues
         {
-            get
-            {
-                StringBuilder l_StringBuilder = new StringBuilder();
-
-                l_StringBuilder.Append($"{this.ID}");
-                l_StringBuilder.Append($",{this.UID}");
-                l_StringBuilder.Append($",{this.FirstName}");
-                l_StringBuilder.Append($",{this.LastName}");
-                l_StringBuilder.Append($",{this.EmailAddress}");
-
-                return l_StringBuilder.ToString();
-            }
+            get { return SQLiteDBStateless.ModelFieldValues(this); }        
         }
 
         #endregion
@@ -91,20 +83,19 @@ namespace DBSqlite.Models
 
         private void Insert()
         {
-            StringBuilder l_StringBuilder = new StringBuilder();
-
-            l_StringBuilder.Append($"INSERT INTO usrUser_user ({ModelFields}) VALUES ({ModelValues})");
-            this.ID = (int)DBSqlite.SQLiteDBStateless.ExecInsertNonQueryReturnID(l_StringBuilder.ToString());
+            this.ID = (int)DBSqlite.SQLiteDBStateless.
+                ExecInsertNonQueryReturnID($"INSERT INTO {this.TableName()} {SQLiteDBStateless.GenerateInsertFields(this)});
         }
 
         private void Update()
         {
-
+            DBSqlite.SQLiteDBStateless.ExecNonQuery($"UPDATE {this.TableName()} {SQLiteDBStateless.GenerateUpdateFields(this)} WHERE usrID = {this.ID}");
         }
 
         private void Delete()
         {
-
+            DBSqlite.SQLiteDBStateless.
+                ExecInsertNonQueryReturnID($"DELETE {this.TableName()} WHERE usrID = {this.ID}");
         }
 
         #endregion

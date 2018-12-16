@@ -25,6 +25,32 @@ namespace DBSqlite
         public static string SetValueForSql(string value) => value == EmptyString ? "NULL" : $"'{value}'";
         public static string SetValueForSql(bool value) => value ? "1" : "0";
 
+        public static string SetValueForSql(object value)
+        {
+            if (value is byte)
+               return SetValueForSql((byte)value);
+            if (value is int)
+                return SetValueForSql((int)value);
+            if (value is long)
+                return SetValueForSql((long)value);
+            if (value is double)
+                return SetValueForSql((double)value);
+            if (value is float)
+                return SetValueForSql((float)value);
+            if (value is decimal)
+                return SetValueForSql((decimal)value);
+            if (value is DateTime)
+                return SetValueForSql((DateTime)value);
+            if (value is char)
+                return SetValueForSql((char)value);
+            if (value is string)
+                return SetValueForSql((string)value);
+            if (value is bool)
+                return SetValueForSql((bool)value);
+
+            return string.Empty;
+        }
+
         public static byte GetValueByteFromSql(object value) => Convert.ToByte(value);
         public static int GetValueIntFromSql(object value) => Convert.ToInt32(value);
         public static long GetValueLongFromSql(object value) => Convert.ToInt64(value);

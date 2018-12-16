@@ -18,6 +18,54 @@ public class TableFieldNameAttribute : Attribute
     }
 }
 
+public class TableFieldExcludeFromUpdateAttribute : Attribute
+{
+    public bool ExcludeFromUpdate { get; }
+
+    internal TableFieldExcludeFromUpdateAttribute(bool excludeFromUpdate)
+    {
+        ExcludeFromUpdate = excludeFromUpdate;
+    }
+}
+
+public class TableFieldExcludeFromInsertAttribute : Attribute
+{
+    public bool ExcludeFromInsert { get; }
+
+    internal TableFieldExcludeFromInsertAttribute(bool excludeFromInsert)
+    {
+        ExcludeFromInsert = excludeFromInsert;
+    }
+}
+
+public class TableNameAttribute : Attribute
+{
+    public string TableName { get; }
+
+    internal TableNameAttribute(string tableName)
+    {
+        if (TableName == null) TableName = string.Empty;
+
+        TableName = tableName;
+    }
+}
+
+#endregion
+
+#region Class Extensions
+public static class ClassExtension
+{
+    /// <summary>
+    /// Returns an empty string if the [TableName] attribute isn't added to the property
+    /// </summary>
+    public static string TableName(this IDatabaseModel value)
+    {
+        return value.GetType()
+                        .GetCustomAttribute<TableNameAttribute>()
+                        .TableName;
+    }
+}
+
 #endregion
 
 #region Integer Extensions
@@ -28,6 +76,15 @@ public static class IntegerExtension
     /// Returns an empty string if the [TableFieldName] attribute isn't added to the property
     /// </summary>
     public static string TableField(this int value)
+    {
+        return value.GetType()
+                        .GetMember(value.ToString())
+                        .First()
+                        .GetCustomAttribute<TableFieldNameAttribute>()
+                        .FieldName;
+    }
+
+    public static string ExcludeFromUpdate(this bool value)
     {
         return value.GetType()
                         .GetMember(value.ToString())
@@ -55,6 +112,22 @@ public static class StringExtension
                         .GetCustomAttribute<TableFieldNameAttribute>()
                         .FieldName;
     }
+
+    public static bool ExcludeFromUpdate(this bool value)
+    {
+        return value.GetType()
+                        .GetCustomAttribute<TableFieldExcludeFromUpdateAttribute>()
+                        .ExcludeFromUpdate;
+    }
+
+    public static bool ExcludeFromInsert(this bool value)
+    {
+        return value.GetType()
+                        .GetCustomAttribute<TableFieldExcludeFromInsertAttribute>()
+                        .ExcludeFromInsert;
+    }
+
+
 
     public static bool IsEmpty(this String value) => value == SQLiteDBCommon.EmptyString ? true : false;
 }

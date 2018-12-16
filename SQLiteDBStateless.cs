@@ -209,11 +209,11 @@ namespace DBSqlite
             }
         }
 
-        public static string ModelFieldNames(Type Model)
+        public static string ModelFieldNames(Type model)
         {
             StringBuilder StringBuilder = new StringBuilder();
 
-            foreach (FieldInfo Field in Model.GetFields(System.Reflection.BindingFlags.Public
+            foreach (FieldInfo Field in model.GetFields(System.Reflection.BindingFlags.Public
                 | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
             {
                 string Value = (string)Field.CustomAttributes.Where(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute)).First().ConstructorArguments.First().Value;
@@ -223,15 +223,68 @@ namespace DBSqlite
             return StringBuilder.ToString();
         }
 
-        public static string ModelFieldValues(object Model)
+        public static string ModelFieldValues(object model)
         {
             StringBuilder StringBuilder = new StringBuilder();
 
-            foreach (var properties in Model.GetType().GetFields(System.Reflection.BindingFlags.Public
+            foreach (var properties in model.GetType().GetFields(System.Reflection.BindingFlags.Public
                 | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
             {
-                object Value = properties.GetValue(Model);
-                StringBuilder.Append(StringBuilder.Length == 0 ? $"{Value}" : $", {Value}");
+                object Value = properties.GetValue(model);
+                StringBuilder.Append(StringBuilder.Length == 0 ? $"{SQLiteDBCommon.SetValueForSql(Value)}" : $", {SQLiteDBCommon.SetValueForSql(Value)}");
+            }
+
+            return StringBuilder.ToString();
+        }
+
+        public static string GenerateInsertFields(IDatabaseModel model)
+        {
+            StringBuilder StringBuilderFields = new StringBuilder();
+            StringBuilder StringBuilderValues = new StringBuilder();
+
+            foreach (FieldInfo Field in model.GetType().GetFields(System.Reflection.BindingFlags.Public
+                | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
+            {
+                CustomAttributeData l_ExcludeFromUpdate = Field.CustomAttributes.FirstOrDefault(customAttributes => customAttributes.AttributeType == typeof(TableFieldExcludeFromUpdateAttribute));
+
+                if (l_ExcludeFromUpdate != null && Convert.ToBoolean(l_ExcludeFromUpdate.ConstructorArguments.First().Value))
+                    continue;
+
+                CustomAttributeData l_TableFieldName = Field.CustomAttributes.FirstOrDefault(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute));
+
+                if (l_TableFieldName == null)
+                    continue;
+
+                string FieldName = (string)l_TableFieldName.ConstructorArguments.First().Value;
+                object FieldValue = Field.GetValue(model);
+
+                StringBuilderFields.Append(StringBuilderFields.Length == 0 ? $"({FieldName}" : $", {FieldName}");
+                StringBuilderValues.Append(StringBuilderValues.Length == 0 ? $"{SQLiteDBCommon.SetValueForSql(FieldValue)}" : $", {SQLiteDBCommon.SetValueForSql(FieldValue)}");
+            }
+
+            return StringBuilderFields.Append($") VALUES ({StringBuilderValues.ToString()})").ToString();
+        }
+
+        public static string GenerateUpdateFields(IDatabaseModel model)
+        {
+          StringBuilder StringBuilder = new StringBuilder();
+
+          foreach (FieldInfo Field in model.GetType().GetFields(System.Reflection.BindingFlags.Public
+                | System.Reflection.BindingFlags.GetField | BindingFlags.Instance))
+            {
+                CustomAttributeData l_ExcludeFromUpdate = Field.CustomAttributes.FirstOrDefault(customAttributes => customAttributes.AttributeType == typeof(TableFieldExcludeFromUpdateAttribute));
+
+                if (l_ExcludeFromUpdate != null && Convert.ToBoolean(l_ExcludeFromUpdate.ConstructorArguments.First().Value))
+                    continue;
+
+                CustomAttributeData l_TableFieldName = Field.CustomAttributes.FirstOrDefault(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute));
+
+                if (l_TableFieldName == null)
+                    continue;
+
+                string FieldName = (string)l_TableFieldName.ConstructorArguments.First().Value;
+                object FieldValue = Field.GetValue(model);
+                StringBuilder.Append(StringBuilder.Length == 0 ? $"{FieldName} = {SQLiteDBCommon.SetValueForSql(FieldValue)}" : $", {FieldName} = {SQLiteDBCommon.SetValueForSql(FieldValue)}");
             }
 
             return StringBuilder.ToString();
