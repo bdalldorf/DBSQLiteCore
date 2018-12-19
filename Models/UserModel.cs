@@ -35,9 +35,9 @@ namespace DBSqlite.Models
 
         public UserModel() { }
 
-            public UserModel(int id)
+        public UserModel(int id)
         {
-            DataTable DataTable = SQLiteDBStateless.ExecDataTable($"SELECT * FROM usrUser_user WHERE usrID = {id}");
+            DataTable DataTable = SQLiteDBStateless.ExecDataTable($"SELECT * FROM {this.TableName()} WHERE usrID = {id}");
 
             if (DataTable.Rows.Count == 1)
             {
@@ -47,25 +47,25 @@ namespace DBSqlite.Models
 
         private void LoadByUserModelDataRow(DataRow dataRow)
         {
-            this.ID = SQLiteDBCommon.GetValueIntFromSql(dataRow[this.ID.TableField()]);
-            this.UID = SQLiteDBCommon.GetValueStringFromSql(dataRow[this.UID.TableField()]);
-            this.FirstName = SQLiteDBCommon.GetValueStringFromSql(dataRow[this.FirstName.TableField()]);
-            this.LastName = SQLiteDBCommon.GetValueStringFromSql(dataRow[this.LastName.TableField()]);
-            this.EmailAddress = SQLiteDBCommon.GetValueStringFromSql(dataRow[this.EmailAddress.TableField()]);
+            this.ID = SQLiteDBCommon.GetValueIntFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.ID)))]);
+            this.UID = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.UID)))]); ;
+            this.FirstName = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.FirstName)))]);
+            this.LastName = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.LastName)))]);
+            this.EmailAddress = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.EmailAddress)))]);
         }
 
         #endregion
 
         #region Additional Methods
 
-        private string ModelFields
+        private List<string> ModelFields
         {
             get { return SQLiteDBStateless.ModelFieldNames(typeof(UserModel)); }
         }
 
-        private string ModelValues
+        private List<object> ModelValues
         {
-            get { return SQLiteDBStateless.ModelFieldValues(this); }        
+            get { return SQLiteDBStateless.ModelFieldValues(this); }
         }
 
         #endregion
@@ -83,18 +83,19 @@ namespace DBSqlite.Models
 
         private void Insert()
         {
-            this.ID = (int)DBSqlite.SQLiteDBStateless.
+            this.ID = (int)SQLiteDBStateless.
                 ExecInsertNonQueryReturnID($"INSERT INTO {this.TableName()} {SQLiteDBStateless.GenerateInsertFields(this)}");
         }
 
         private void Update()
         {
-            DBSqlite.SQLiteDBStateless.ExecNonQuery($"UPDATE {this.TableName()} {SQLiteDBStateless.GenerateUpdateFields(this)} WHERE usrID = {this.ID}");
+            string test = $"UPDATE {this.TableName()} SET {SQLiteDBStateless.GenerateUpdateFields(this)} WHERE usrID = {this.ID}";
+            SQLiteDBStateless.ExecNonQuery($"UPDATE {this.TableName()} SET {SQLiteDBStateless.GenerateUpdateFields(this)} WHERE usrID = {this.ID}");
         }
 
         private void Delete()
         {
-            DBSqlite.SQLiteDBStateless.
+            SQLiteDBStateless.
                 ExecInsertNonQueryReturnID($"DELETE FROM {this.TableName()} WHERE usrID = {this.ID}");
         }
 
