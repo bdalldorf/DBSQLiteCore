@@ -309,5 +309,20 @@ namespace DBSqlite
 
             return StringBuilder.ToString();
         }
+
+        public static string GenerateStandardInsertStatement(IDatabaseModel model)
+        {
+            return $"INSERT INTO {model.TableName()} {GenerateInsertFields(model)}";
+        }
+
+        public static string GenerateStandardUpdateStatement(IDatabaseModel model, string primaryKeyFieldName, object primaryKeyValue)
+        {
+            return $"UPDATE {model.TableName()} SET {GenerateUpdateFields(model)} WHERE {GetDatabaseTableFieldName(model, primaryKeyFieldName)} = {primaryKeyValue}";
+        }
+
+        public static string GenerateStandardDeleteStatement(IDatabaseModel model, string primaryKeyFieldName, object primaryKeyValue)
+        {
+            return $"DELETE FROM {model.TableName()} WHERE {GetDatabaseTableFieldName(model, primaryKeyFieldName)} = {primaryKeyValue}";
+        }
     }
 }

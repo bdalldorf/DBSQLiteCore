@@ -86,20 +86,17 @@ namespace DBSqlite.Models
 
         private void Insert()
         {
-            this.ID = (int)SQLiteDBStateless.
-                ExecInsertNonQueryReturnID($"INSERT INTO {this.TableName()} {SQLiteDBStateless.GenerateInsertFields(this)}");
+            this.ID = (int)SQLiteDBStateless.ExecInsertNonQueryReturnID(SQLiteDBStateless.GenerateStandardInsertStatement(this));
         }
 
         private void Update()
         {
-            string test = $"UPDATE {this.TableName()} SET {SQLiteDBStateless.GenerateUpdateFields(this)} WHERE usrID = {this.ID}";
-            SQLiteDBStateless.ExecNonQuery($"UPDATE {this.TableName()} SET {SQLiteDBStateless.GenerateUpdateFields(this)} WHERE usrID = {this.ID}");
+            SQLiteDBStateless.ExecNonQuery(SQLiteDBStateless.GenerateStandardUpdateStatement(this, nameof(this.ID), this.ID));
         }
 
         private void Delete()
         {
-            SQLiteDBStateless.
-                ExecInsertNonQueryReturnID($"DELETE FROM {this.TableName()} WHERE usrID = {this.ID}");
+            SQLiteDBStateless.ExecNonQuery(SQLiteDBStateless.GenerateStandardDeleteStatement(this, nameof(this.ID), this.ID));
         }
 
         #endregion
