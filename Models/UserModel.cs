@@ -47,12 +47,15 @@ namespace DBSqlite.Models
 
         private void LoadByUserModelDataRow(DataRow dataRow)
         {
-            this.ID = SQLiteDBCommon.GetValueIntFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.ID)))]);
-            this.UID = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.UID)))]); ;
-            this.FirstName = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.FirstName)))]);
-            this.LastName = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.LastName)))]);
-            this.EmailAddress = SQLiteDBCommon.GetValueStringFromSql(dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this.GetType().GetField(nameof(this.EmailAddress)))]);
+            this.ID = SQLiteDBCommon.GetValueIntFromSql(GetDatabaseTableFieldName(dataRow, nameof(this.ID)));
+            this.UID = SQLiteDBCommon.GetValueStringFromSql(GetDatabaseTableFieldName(dataRow, nameof(this.UID))); ;
+            this.FirstName = SQLiteDBCommon.GetValueStringFromSql(GetDatabaseTableFieldName(dataRow, nameof(this.FirstName)));
+            this.LastName = SQLiteDBCommon.GetValueStringFromSql(GetDatabaseTableFieldName(dataRow, nameof(this.LastName)));
+            this.EmailAddress = SQLiteDBCommon.GetValueStringFromSql(GetDatabaseTableFieldName(dataRow, nameof(this.EmailAddress)));
         }
+
+        private object GetDatabaseTableFieldName(DataRow dataRow, string fieldName) => dataRow[SQLiteDBStateless.GetDatabaseTableFieldName(this, fieldName)];
+
 
         #endregion
 

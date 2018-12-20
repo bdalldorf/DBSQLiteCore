@@ -209,9 +209,9 @@ namespace DBSqlite
             }
         }
 
-        public static string GetDatabaseTableFieldName(Type model, string fieldName)
+        public static string GetDatabaseTableFieldName(object model, string fieldName)
         {
-            return (string)model.GetField(fieldName)
+            return (string)model.GetType().GetField(fieldName)
                 .CustomAttributes.Where(customAttributes => customAttributes.AttributeType == typeof(TableFieldNameAttribute))
                 .First()
                 .ConstructorArguments
