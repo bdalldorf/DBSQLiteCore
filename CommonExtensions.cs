@@ -86,7 +86,7 @@ public static class IntegerExtension
                         .ExcludeFromInsert;
     }
 
-    public static bool IsEmpty(this int value) => value == SQLiteDBCommon.EmptyInt ? true : false;
+    public static bool IsEmpty(this int value) => (value == SQLiteDBCommon.EmptyInt || value == 0) ? true : false;
 }
 #endregion
 

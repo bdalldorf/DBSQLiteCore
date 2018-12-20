@@ -94,7 +94,7 @@ namespace DBSqlite.Models
             SQLiteDBStateless.ExecNonQuery(SQLiteDBStateless.GenerateStandardUpdateStatement(this, nameof(this.ID), this.ID));
         }
 
-        private void Delete()
+        public void Delete()
         {
             SQLiteDBStateless.ExecNonQuery(SQLiteDBStateless.GenerateStandardDeleteStatement(this, nameof(this.ID), this.ID));
         }
