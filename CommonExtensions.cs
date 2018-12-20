@@ -94,18 +94,6 @@ public static class IntegerExtension
 
 public static class StringExtension
 {
-    /// <summary>
-    /// Returns an empty string if the [TableFieldName] attribute isn't added to the property
-    /// </summary>
-    public static string TableField(this string value)
-    {
-        return value.GetType()
-                        .GetMember(value)
-                        .First()
-                        .GetCustomAttribute<TableFieldNameAttribute>()
-                        .FieldName;
-    }
-
     public static bool ExcludeFromUpdate(this bool value)
     {
         return value.GetType()
