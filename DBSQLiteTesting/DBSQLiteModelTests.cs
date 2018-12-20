@@ -55,10 +55,10 @@ namespace DBSqlLiteTests
                 EmailAddress = "test@testing.com"
             };
 
-            string UserUpdateFields = SQLiteDBStateless.GenerateInsertFields(UserModel);
-            Assert.AreEqual("(usrUID, usrFirstName, usrLastName, usrEmailAddress) VALUES ('Testert1', 'Test', 'Tester', 'test@testing.com')", UserUpdateFields);
+            string UserInsertFields = SQLiteDBStateless.GenerateInsertFields(UserModel);
+            Assert.AreEqual("(usrUID, usrFirstName, usrLastName, usrEmailAddress) VALUES ('Testert1', 'Test', 'Tester', 'test@testing.com')", UserInsertFields);
             Assert.AreEqual($"INSERT INTO {UserModel.TableName()} (usrUID, usrFirstName, usrLastName, usrEmailAddress) VALUES ('Testert1', 'Test', 'Tester', 'test@testing.com')", 
-                $"INSERT INTO {UserModel.TableName()} {UserUpdateFields}");
+                $"INSERT INTO {UserModel.TableName()} {UserInsertFields}");
         }
 
         [Test]
@@ -73,9 +73,9 @@ namespace DBSqlLiteTests
                 EmailAddress = "test@testing.com"
             };
 
-            string UserUpdateStatement = SQLiteDBStateless.GenerateStandardInsertStatement(UserModel);
+            string UserInsertStatement = SQLiteDBStateless.GenerateStandardInsertStatement(UserModel);
             Assert.AreEqual($"INSERT INTO {UserModel.TableName()} (usrUID, usrFirstName, usrLastName, usrEmailAddress) VALUES ('Testert1', 'Test', 'Tester', 'test@testing.com')",
-                UserUpdateStatement);
+                UserInsertStatement);
         }
 
         [Test]
@@ -108,9 +108,9 @@ namespace DBSqlLiteTests
                 EmailAddress = "test@testing.com"
             };
 
-            string UserUpdateFields = SQLiteDBStateless.GenerateStandardUpdateStatement(UserModel, nameof(UserModel.ID), UserModel.ID);
+            string UserUpdateStatement = SQLiteDBStateless.GenerateStandardUpdateStatement(UserModel, nameof(UserModel.ID), UserModel.ID);
             Assert.AreEqual($"UPDATE {UserModel.TableName()} SET usrUID = 'Testert1', usrFirstName = 'Test', usrLastName = 'Tester', usrEmailAddress = 'test@testing.com' WHERE usrID = 1",
-                UserUpdateFields);
+                UserUpdateStatement);
         }
 
         [Test]
@@ -125,9 +125,9 @@ namespace DBSqlLiteTests
                 EmailAddress = "test@testing.com"
             };
 
-            string UserUpdateFields = SQLiteDBStateless.GenerateStandardDeleteStatement(UserModel, nameof(UserModel.ID), UserModel.ID);
+            string UserDeleteStatement = SQLiteDBStateless.GenerateStandardDeleteStatement(UserModel, nameof(UserModel.ID), UserModel.ID);
             Assert.AreEqual($"DELETE FROM {UserModel.TableName()} WHERE usrID = 1",
-                UserUpdateFields);
+                UserDeleteStatement);
         }
 
         [Test]
